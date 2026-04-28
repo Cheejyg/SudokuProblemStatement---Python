@@ -37,13 +37,24 @@ class Sudoku:
 
         row = cell[0].upper()
         col = cell[1]
+        if not col.isdigit():
+            return None
+        col = int(col)
 
-        if ord(row) not in range(ord("A"), ord("Z") + 1) or not col.isdigit():
+        if ord(row) not in range(ord("A"), ord("I") + 1) or col <= 0 or col > 9:
             return None
 
         return ord(row) - ord('A'), int(col) - 1
 
+    def rowcol_to_cell(self, row: int, col: int) -> str | None:
+        if row < 0 or col < 0 or row > 9 or col > 9:
+            return None
+        return chr(ord("A") + row) + str(col + 1)
+
     def enter_number(self, number: int, cell: str) -> None:
+        if number not in range(1, 9 + 1):
+            return None
+
         cell = self.cell_to_rowcol(cell)
         if not cell:
             return
