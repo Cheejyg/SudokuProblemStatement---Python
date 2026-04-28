@@ -11,26 +11,67 @@ class Sudoku:
         self.pre_filled_numbers = pre_filled_numbers
         self.empty_cells_representation = empty_cells_representation
         self.grid: list[list[int | None]] = [[None for _ in range(9)] for _ in range(9)]
-
-        def generate_number(low: int, high: int) -> int:
-            return random.randint(low, high)
+        self.pre_filled_cells = set()
 
         def generate_puzzle() -> None:
-            self.pre_filled_cells = set()
-
             for i in range(pre_filled_numbers):
-                number = generate_number(1, 9)
-                row = generate_number(0, 8)
-                col = generate_number(0, 8)
+                number = self.generate_number(1, 9)
+                row = self.generate_number(0, 8)
+                col = self.generate_number(0, 8)
                 while (row, col) in self.pre_filled_cells:
-                    number = generate_number(1, 9)
-                    row = generate_number(0, 8)
-                    col = generate_number(0, 8)
+                    number = self.generate_number(1, 9)
+                    row = self.generate_number(0, 8)
+                    col = self.generate_number(0, 8)
                 # TODO: check_validity
                 self.grid[row][col] = number
                 self.pre_filled_cells.add((row, col))
 
         generate_puzzle()
+
+    def generate_number(self, low: int, high: int) -> int:
+        return random.randint(low, high)
+
+    def cell_to_rowcol(self, cell: str) -> tuple[int, int] | None:
+        if len(cell) != 2:
+            return None
+
+        row = cell[0].upper()
+        col = cell[1]
+
+        if ord(row) not in range(ord("A"), ord("Z") + 1) or not col.isdigit():
+            return None
+
+        return ord(row) - ord('A'), int(col) - 1
+
+    def enter_number(self, number: int, cell: str) -> None:
+        cell = self.cell_to_rowcol(cell)
+        if not cell:
+            return
+        row, col = cell
+        if (row, col) not in self.pre_filled_cells:
+            self.grid[row][col] = number
+
+    def clear_cell(self, cell: str) -> None:
+        cell = self.cell_to_rowcol(cell)
+        if not cell:
+            return
+        row, col = cell
+        if (row, col) not in self.pre_filled_cells:
+            self.grid[row][col] = None
+
+    def request_hint(self) -> None:
+        number = self.generate_number(1, 9)
+        row = self.generate_number(0, 8)
+        col = self.generate_number(0, 8)
+        while (row, col) in self.pre_filled_cells:
+            number = self.generate_number(1, 9)
+            row = self.generate_number(0, 8)
+            col = self.generate_number(0, 8)
+        # TODO: check_validity
+        self.grid[row][col] = number
+
+    def check_validity(self) -> None:
+        pass
 
     def display_grid(self) -> None:
         output = "    " + " ".join(map(str, [i + 1 for i in range(0, 9)])) + "\n"
