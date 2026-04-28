@@ -52,7 +52,15 @@ class Sudoku:
                         self.display_grid()
                         print()
                     elif command[1] == "clear":
-                        continue
+                        print()
+                        if self.clear_cell(command[0]):
+                            print("Move accepted.")
+                        else:
+                            print("Invalid move. " + command[0] + " is pre-filled.")
+                        print()
+                        print("Current grid:")
+                        self.display_grid()
+                        print()
                 continue
             elif len(command) == 1:
                 if command[0] == "hint":
