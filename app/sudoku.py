@@ -22,8 +22,17 @@ class Sudoku:
                     number = self.generate_number(1, 9)
                     row = self.generate_number(0, 8)
                     col = self.generate_number(0, 8)
-                # TODO: check_validity
                 self.grid[row][col] = number
+                while not self.check_validity():
+                    self.grid[row][col] = None
+                    number = self.generate_number(1, 9)
+                    row = self.generate_number(0, 8)
+                    col = self.generate_number(0, 8)
+                    while (row, col) in self.pre_filled_cells:
+                        number = self.generate_number(1, 9)
+                        row = self.generate_number(0, 8)
+                        col = self.generate_number(0, 8)
+                    self.grid[row][col] = number
                 self.pre_filled_cells.add((row, col))
 
         generate_puzzle()
@@ -133,8 +142,36 @@ class Sudoku:
         # TODO: check_validity
         self.grid[row][col] = number
 
-    def check_validity(self) -> None:
-        pass
+    def check_validity(self) -> bool:
+        for row in range(len(self.grid)):
+            check = set()
+            for col in range(len(self.grid[row])):
+                if self.grid[row][col]:
+                    if self.grid[row][col] in check:
+                        return False
+                    check.add(self.grid[row][col])
+
+        for col in range(len(self.grid[0])):
+            check = set()
+            for row in range(len(self.grid)):
+                if self.grid[row][col]:
+                    if self.grid[row][col] in check:
+                        return False
+                    check.add(self.grid[row][col])
+
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                check = set()
+                for x in range(3):
+                    for y in range(3):
+                        row = i + x
+                        col = j + y
+                        if self.grid[row][col]:
+                            if self.grid[row][col] in check:
+                                return False
+                            check.add(self.grid[row][col])
+
+        return True
 
     def display_grid(self) -> None:
         output = "    " + " ".join(map(str, [i + 1 for i in range(0, 9)])) + "\n"
