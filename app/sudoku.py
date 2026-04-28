@@ -28,6 +28,42 @@ class Sudoku:
 
         generate_puzzle()
 
+    def play(self):
+        print("Welcome to Sudoku!")
+        print()
+        print("Here is your puzzle:")
+        self.display_grid()
+        print()
+        while True:
+            command = input("Enter command (e.g., A3 4, C5 clear, hint, check, quit):\n").strip().split(" ")
+            if not command:
+                continue
+
+            if len(command) == 2:
+                if len(command[0]) == 2:
+                    if command[0][0].isalpha() and command[0][1].isdigit() and command[1].isdigit():
+                        print()
+                        if self.enter_number(int(command[1]), command[0]):
+                            print("Move accepted.")
+                        else:
+                            print("Invalid move. " + command[0] + " is pre-filled.")
+                        print()
+                        print("Current grid:")
+                        self.display_grid()
+                        print()
+                    elif command[1] == "clear":
+                        continue
+                continue
+            elif len(command) == 1:
+                if command[0] == "hint":
+                    continue
+                elif command[0] == "check":
+                    continue
+                elif command[0] == "quit":
+                    break
+            else:
+                continue
+
     def generate_number(self, low: int, high: int) -> int:
         return random.randint(low, high)
 
@@ -51,24 +87,32 @@ class Sudoku:
             return None
         return chr(ord("A") + row) + str(col + 1)
 
-    def enter_number(self, number: int, cell: str) -> None:
+    def enter_number(self, number: int, cell: str) -> bool:
         if number not in range(1, 9 + 1):
-            return None
+            return False
 
         cell = self.cell_to_rowcol(cell)
         if not cell:
-            return
-        row, col = cell
-        if (row, col) not in self.pre_filled_cells:
-            self.grid[row][col] = number
+            return False
 
-    def clear_cell(self, cell: str) -> None:
+        row, col = cell
+        if (row, col) in self.pre_filled_cells:
+            return False
+
+        self.grid[row][col] = number
+        return True
+
+    def clear_cell(self, cell: str) -> bool:
         cell = self.cell_to_rowcol(cell)
         if not cell:
-            return
+            return False
+
         row, col = cell
-        if (row, col) not in self.pre_filled_cells:
-            self.grid[row][col] = None
+        if (row, col) in self.pre_filled_cells:
+            return False
+
+        self.grid[row][col] = None
+        return True
 
     def request_hint(self) -> None:
         number = self.generate_number(1, 9)
