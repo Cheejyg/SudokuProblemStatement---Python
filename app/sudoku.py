@@ -23,7 +23,7 @@ class Sudoku:
                 row = generate_number(0, 8)
                 col = generate_number(0, 8)
                 while (row, col) in self.pre_filled_cells:
-                    number = generate_number(0, 8)
+                    number = generate_number(1, 9)
                     row = generate_number(0, 8)
                     col = generate_number(0, 8)
                 # TODO: check_validity
