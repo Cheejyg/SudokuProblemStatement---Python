@@ -8,9 +8,11 @@ class Sudoku:
         *,
         pre_filled_numbers: int = 30,
         empty_cells_representation: str = "_",
+        seed: float = random.random(),
     ) -> None:
         self.pre_filled_numbers = pre_filled_numbers
         self.empty_cells_representation = empty_cells_representation
+        random.seed(seed)
         self.grid: list[list[int | None]] = [[None for _ in range(9)] for _ in range(9)]
         self.pre_filled_cells = set()
 
