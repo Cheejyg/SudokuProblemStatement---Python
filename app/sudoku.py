@@ -33,12 +33,15 @@ class Sudoku:
                 else:
                     self.grid[row][col] = None
 
-    def play(self):
+    def _display_welcome(self) -> None:
         print("Welcome to Sudoku!")
         print()
         print("Here is your puzzle:")
         self.display_grid()
         print()
+
+    def play(self):
+        self._display_welcome()
         while True:
             command = input("Enter command (e.g., A3 4, C5 clear, hint, check, quit):\n").strip().split(" ")
             if not command:
@@ -60,11 +63,7 @@ class Sudoku:
                             print("You have successfully completed the Sudoku puzzle!")
                             input("Press any key to play again...")
                             self._generate_puzzle()
-                            print("Welcome to Sudoku!")
-                            print()
-                            print("Here is your puzzle:")
-                            self.display_grid()
-                            print()
+                            self._display_welcome()
                             continue
                     elif command[1] == "clear":
                         print()
