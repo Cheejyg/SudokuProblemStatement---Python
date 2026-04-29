@@ -16,25 +16,20 @@ class Sudoku:
 
         def generate_puzzle() -> None:
             for i in range(pre_filled_numbers):
-                number = self.generate_number(1, 9)
-                row = self.generate_number(0, 8)
-                col = self.generate_number(0, 8)
-                while (row, col) in self.pre_filled_cells:
+                while True:
                     number = self.generate_number(1, 9)
                     row = self.generate_number(0, 8)
                     col = self.generate_number(0, 8)
-                self.grid[row][col] = number
-                while not self.check_validity():
-                    self.grid[row][col] = None
-                    number = self.generate_number(1, 9)
-                    row = self.generate_number(0, 8)
-                    col = self.generate_number(0, 8)
-                    while (row, col) in self.pre_filled_cells:
-                        number = self.generate_number(1, 9)
-                        row = self.generate_number(0, 8)
-                        col = self.generate_number(0, 8)
+
+                    if (row, col) in self.pre_filled_cells or not self.check_move_validity(self.grid, row, col, number):
+                        continue
+
                     self.grid[row][col] = number
-                self.pre_filled_cells.add((row, col))
+                    if self._is_solvable(self.grid):
+                        self.pre_filled_cells.add((row, col))
+                        break
+                    else:
+                        self.grid[row][col] = None
 
         generate_puzzle()
 
@@ -211,6 +206,10 @@ class Sudoku:
                             grid[row][col] = None
                     return False
         return True
+
+    def _is_solvable(self, grid: list[list[int | None]]) -> bool:
+        temp = copy.deepcopy(grid)
+        return self._solve(temp)
 
     def display_grid(self) -> None:
         output = "    " + " ".join(map(str, [i + 1 for i in range(0, 9)])) + "\n"
