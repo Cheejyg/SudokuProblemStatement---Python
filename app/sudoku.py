@@ -69,7 +69,8 @@ class Sudoku:
                 continue
             elif len(command) == 1:
                 if command[0] == "hint":
-                    continue
+                    self.request_hint()
+                    print()
                 elif command[0] == "check":
                     self.check_validity()
                     print()
@@ -129,15 +130,15 @@ class Sudoku:
         return True
 
     def request_hint(self) -> None:
-        number = self.generate_number(1, 9)
-        row = self.generate_number(0, 8)
-        col = self.generate_number(0, 8)
-        while (row, col) in self.pre_filled_cells:
-            number = self.generate_number(1, 9)
-            row = self.generate_number(0, 8)
-            col = self.generate_number(0, 8)
-        # TODO: check_validity
-        self.grid[row][col] = number
+        grid = copy.deepcopy(self.grid)
+        if not self._solve(grid):
+            return
+
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[row])):
+                if self.grid[row][col] is None:
+                    print("Hint: Cell " + self.rowcol_to_cell(row, col) + " = ", grid[row][col])
+                    return
 
     def check_validity(self) -> bool:
         for row in range(len(self.grid)):
