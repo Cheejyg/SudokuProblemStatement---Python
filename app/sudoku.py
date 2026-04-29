@@ -1,3 +1,4 @@
+import copy
 import random
 
 
@@ -101,7 +102,7 @@ class Sudoku:
         return ord(row) - ord('A'), int(col) - 1
 
     def rowcol_to_cell(self, row: int, col: int) -> str | None:
-        if row < 0 or col < 0 or row > 9 or col > 9:
+        if row < 0 or col < 0 or row >= 9 or col >= 9:
             return None
         return chr(ord("A") + row) + str(col + 1)
 
@@ -178,22 +179,37 @@ class Sudoku:
         print("No rule violations detected.")
         return True
 
-    def check_move_validity(self, row: int, col: int, number: int) -> bool:
-        for i in range(len(self.grid)):
-            if i != col and self.grid[row][i] == number:
+    def check_move_validity(self, grid: list[list[int | None]], row: int, col: int, number: int) -> bool:
+        for i in range(len(grid)):
+            if i != col and grid[row][i] == number:
                 return False
 
-        for i in range(len(self.grid)):
-            if i != row and self.grid[i][col] == number:
+        for i in range(len(grid)):
+            if i != row and grid[i][col] == number:
                 return False
 
         i = (row // 3) * 3
         j = (col // 3) * 3
         for x in range(3):
             for y in range(3):
-                if not (i + x == row or j + y == col) and self.grid[i + x][j + y] == number:
+                if not (i + x == row or j + y == col) and grid[i + x][j + y] == number:
                     return False
 
+        return True
+
+    def _solve(self, grid: list[list[int | None]]) -> bool:
+        for row in range(len(grid)):
+            for col in range(len(grid[row])):
+                if grid[row][col] is None:
+                    numbers = list(range(1, 9 + 1))
+                    random.shuffle(numbers)
+                    for number in numbers:
+                        if self.check_move_validity(grid, row, col, number):
+                            grid[row][col] = number
+                            if self._solve(grid):
+                                return True
+                            grid[row][col] = None
+                    return False
         return True
 
     def display_grid(self) -> None:
