@@ -17,22 +17,24 @@ class Sudoku:
         self._generate_puzzle()
 
     def _generate_puzzle(self) -> None:
+        grid = [[None for _ in range(9)] for _ in range(9)]
         self.pre_filled_cells = set()
-        for i in range(self.pre_filled_numbers):
-            while True:
-                number = self.generate_number(1, 9)
+        self._solve(grid)
+
+        for i in range(9 * 9 - self.pre_filled_numbers):
+            row = self.generate_number(0, 8)
+            col = self.generate_number(0, 8)
+            while grid[row][col] is None:
                 row = self.generate_number(0, 8)
                 col = self.generate_number(0, 8)
+            grid[row][col] = None
 
-                if (row, col) in self.pre_filled_cells or not self.check_move_validity(self.grid, row, col, number):
-                    continue
-
-                self.grid[row][col] = number
-                if self._is_solvable(self.grid):
+        for row in range(len(grid)):
+            for col in range(len(grid[row])):
+                if grid[row][col] is not None:
                     self.pre_filled_cells.add((row, col))
-                    break
-                else:
-                    self.grid[row][col] = None
+
+        self.grid = grid
 
     def _display_welcome(self) -> None:
         print("Welcome to Sudoku!")
@@ -253,10 +255,6 @@ class Sudoku:
                             grid[row][col] = None
                     return False
         return True
-
-    def _is_solvable(self, grid: list[list[int | None]]) -> bool:
-        temp = copy.deepcopy(grid)
-        return self._solve(temp)
 
     def display_grid(self) -> None:
         output = "    " + " ".join(map(str, [i + 1 for i in range(0, 9)])) + "\n"
