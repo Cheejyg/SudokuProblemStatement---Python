@@ -14,24 +14,24 @@ class Sudoku:
         self.grid: list[list[int | None]] = [[None for _ in range(9)] for _ in range(9)]
         self.pre_filled_cells = set()
 
-        def generate_puzzle() -> None:
-            for i in range(pre_filled_numbers):
-                while True:
-                    number = self.generate_number(1, 9)
-                    row = self.generate_number(0, 8)
-                    col = self.generate_number(0, 8)
+        self._generate_puzzle()
 
-                    if (row, col) in self.pre_filled_cells or not self.check_move_validity(self.grid, row, col, number):
-                        continue
+    def _generate_puzzle(self) -> None:
+        for i in range(self.pre_filled_numbers):
+            while True:
+                number = self.generate_number(1, 9)
+                row = self.generate_number(0, 8)
+                col = self.generate_number(0, 8)
 
-                    self.grid[row][col] = number
-                    if self._is_solvable(self.grid):
-                        self.pre_filled_cells.add((row, col))
-                        break
-                    else:
-                        self.grid[row][col] = None
+                if (row, col) in self.pre_filled_cells or not self.check_move_validity(self.grid, row, col, number):
+                    continue
 
-        generate_puzzle()
+                self.grid[row][col] = number
+                if self._is_solvable(self.grid):
+                    self.pre_filled_cells.add((row, col))
+                    break
+                else:
+                    self.grid[row][col] = None
 
     def play(self):
         print("Welcome to Sudoku!")
@@ -59,7 +59,13 @@ class Sudoku:
                         if self.check_end():
                             print("You have successfully completed the Sudoku puzzle!")
                             input("Press any key to play again...")
-                            return
+                            self._generate_puzzle()
+                            print("Welcome to Sudoku!")
+                            print()
+                            print("Here is your puzzle:")
+                            self.display_grid()
+                            print()
+                            continue
                     elif command[1] == "clear":
                         print()
                         if self.clear_cell(command[0]):
