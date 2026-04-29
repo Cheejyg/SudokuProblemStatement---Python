@@ -56,6 +56,10 @@ class Sudoku:
                         print("Current grid:")
                         self.display_grid()
                         print()
+                        if self.check_end():
+                            print("You have successfully completed the Sudoku puzzle!")
+                            input("Press any key to play again...")
+                            return
                     elif command[1] == "clear":
                         print()
                         if self.clear_cell(command[0]):
@@ -190,6 +194,42 @@ class Sudoku:
             for y in range(3):
                 if not (i + x == row or j + y == col) and grid[i + x][j + y] == number:
                     return False
+
+        return True
+
+    def check_end(self) -> bool:
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[row])):
+                if self.grid[row][col] is None:
+                    return False
+
+        for row in range(len(self.grid)):
+            check = set()
+            for col in range(len(self.grid[row])):
+                if self.grid[row][col]:
+                    if self.grid[row][col] in check:
+                        return False
+                    check.add(self.grid[row][col])
+
+        for col in range(len(self.grid[0])):
+            check = set()
+            for row in range(len(self.grid)):
+                if self.grid[row][col]:
+                    if self.grid[row][col] in check:
+                        return False
+                    check.add(self.grid[row][col])
+
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                check = set()
+                for x in range(3):
+                    for y in range(3):
+                        row = i + x
+                        col = j + y
+                        if self.grid[row][col]:
+                            if self.grid[row][col] in check:
+                                return False
+                            check.add(self.grid[row][col])
 
         return True
 
