@@ -178,6 +178,24 @@ class Sudoku:
         print("No rule violations detected.")
         return True
 
+    def check_move_validity(self, row: int, col: int, number: int) -> bool:
+        for i in range(len(self.grid)):
+            if i != col and self.grid[row][i] == number:
+                return False
+
+        for i in range(len(self.grid)):
+            if i != row and self.grid[i][col] == number:
+                return False
+
+        i = (row // 3) * 3
+        j = (col // 3) * 3
+        for x in range(3):
+            for y in range(3):
+                if not (i + x == row or j + y == col) and self.grid[i + x][j + y] == number:
+                    return False
+
+        return True
+
     def display_grid(self) -> None:
         output = "    " + " ".join(map(str, [i + 1 for i in range(0, 9)])) + "\n"
 
