@@ -70,11 +70,14 @@ def test_check_validity():
     sudoku.enter_number(6, "A1")
     assert not sudoku.check_validity()
     sudoku.clear_cell("A1")
+    assert sudoku.check_validity()
 
     sudoku.enter_number(1, "A1")
     assert not sudoku.check_validity()
     sudoku.clear_cell("A1")
+    assert sudoku.check_validity()
 
     sudoku.enter_number(4, "A6")
     assert not sudoku.check_validity()
-    sudoku.clear_cell("A3")
+    sudoku.clear_cell("A6")
+    assert sudoku.check_validity()
