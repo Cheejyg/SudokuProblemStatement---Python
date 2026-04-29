@@ -17,6 +17,7 @@ class Sudoku:
         self._generate_puzzle()
 
     def _generate_puzzle(self) -> None:
+        self.pre_filled_cells = set()
         for i in range(self.pre_filled_numbers):
             while True:
                 number = self.generate_number(1, 9)
