@@ -75,7 +75,8 @@ class Sudoku:
                 if command[0] == "hint":
                     continue
                 elif command[0] == "check":
-                    continue
+                    self.check_validity()
+                    print()
                 elif command[0] == "quit":
                     break
             else:
@@ -148,6 +149,7 @@ class Sudoku:
             for col in range(len(self.grid[row])):
                 if self.grid[row][col]:
                     if self.grid[row][col] in check:
+                        print("Number", self.grid[row][col], "already exists in Row", chr(ord('A') + row) + ".")
                         return False
                     check.add(self.grid[row][col])
 
@@ -156,6 +158,7 @@ class Sudoku:
             for row in range(len(self.grid)):
                 if self.grid[row][col]:
                     if self.grid[row][col] in check:
+                        print("Number", self.grid[row][col], "already exists in Col " + str(col + 1) + ".")
                         return False
                     check.add(self.grid[row][col])
 
@@ -168,9 +171,11 @@ class Sudoku:
                         col = j + y
                         if self.grid[row][col]:
                             if self.grid[row][col] in check:
+                                print("Number", self.grid[row][col], "already exists in the same 3×3 subgrid.")
                                 return False
                             check.add(self.grid[row][col])
 
+        print("No rule violations detected.")
         return True
 
     def display_grid(self) -> None:
