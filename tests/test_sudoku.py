@@ -22,6 +22,10 @@ def test_generate_puzzle():
             if sudoku.grid[row][col]:
                 filled_numbers += 1
     assert pre_filled_numbers == filled_numbers
+    assert sudoku.check_validity()
+
+    sudoku._generate_puzzle()
+    assert sudoku.check_validity()
 
 
 def test_cell_to_rowcol():
@@ -57,3 +61,20 @@ def test_enter_and_clear_number():
 
     sudoku.clear_cell(cell)
     assert sudoku.grid[row][col] is None
+
+def test_check_validity():
+    sudoku = Sudoku(seed=0)
+    sudoku.display_grid()
+    assert sudoku.check_validity()
+
+    sudoku.enter_number(6, "A1")
+    assert not sudoku.check_validity()
+    sudoku.clear_cell("A1")
+
+    sudoku.enter_number(1, "A1")
+    assert not sudoku.check_validity()
+    sudoku.clear_cell("A1")
+
+    sudoku.enter_number(4, "A6")
+    assert not sudoku.check_validity()
+    sudoku.clear_cell("A3")
